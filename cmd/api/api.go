@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/EmiliodDev/go-pos/cmd/internal/healthcheck"
+	"github.com/EmiliodDev/go-pos/internal/healthcheck"
 )
 
 func (a *app) mount() http.Handler {
