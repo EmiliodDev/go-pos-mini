@@ -17,5 +17,8 @@ func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	api.run(api.mount())
+	if err := api.run(api.mount()); err != nil {
+		slog.Error("Something went wrong!")
+		os.Exit(1)
+	}
 }
