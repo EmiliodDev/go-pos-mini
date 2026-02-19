@@ -1,1 +1,3 @@
-# Hello World
+# http-go-pos
+
+Simple HTTP REST API.
