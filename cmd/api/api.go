@@ -1,10 +1,12 @@
 package main
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/EmiliodDev/go-pos/internal/healthcheck"
+	"github.com/jackc/pgx/v5"
 )
 
 func (a *app) mount() http.Handler {
@@ -25,13 +27,21 @@ func (a *app) run(h http.Handler) error {
 		IdleTimeout:  time.Minute,
 	}
 
+	a.logger.Info("server listening on", "port", a.config.addr)
 	return srv.ListenAndServe()
-}
-
-type config struct {
-	addr string
 }
 
 type app struct {
 	config config
+	db     *pgx.Conn
+	logger *slog.Logger
+}
+
+type config struct {
+	addr string
+	db   dbConfig
+}
+
+type dbConfig struct {
+	dns string
 }
