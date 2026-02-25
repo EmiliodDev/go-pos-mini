@@ -7,7 +7,36 @@ package repo
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const createProduct = `-- name: CreateProduct :one
+INSERT INTO products (name, description, price_cents)
+VALUES (
+    $1, $2, $3
+    ) RETURNING product_id, name, description, price_cents, created_at, updated_at
+`
+
+type CreateProductParams struct {
+	Name        string      `json:"name"`
+	Description string      `json:"description"`
+	PriceCents  pgtype.Int4 `json:"price_cents"`
+}
+
+func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
+	row := q.db.QueryRow(ctx, createProduct, arg.Name, arg.Description, arg.PriceCents)
+	var i Product
+	err := row.Scan(
+		&i.ProductID,
+		&i.Name,
+		&i.Description,
+		&i.PriceCents,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
 
 const getProduct = `-- name: GetProduct :one
 SELECT

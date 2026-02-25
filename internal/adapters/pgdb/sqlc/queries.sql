@@ -18,3 +18,9 @@ SELECT
     updated_at
 FROM products
 WHERE product_id = $1;
+
+-- name: CreateProduct :one
+INSERT INTO products (name, description, price_cents)
+VALUES (
+    $1, $2, $3
+    ) RETURNING *;

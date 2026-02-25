@@ -6,8 +6,14 @@ import (
 	"net/http"
 )
 
-func Write(w http.ResponseWriter, status int, data any) {
+func Write(w http.ResponseWriter, status int, data any) error {
 	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	return json.NewEncoder(w).Encode(data)
+}
+
+func Read(r *http.Request, data any) error {
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	return decoder.Decode(data)
 }

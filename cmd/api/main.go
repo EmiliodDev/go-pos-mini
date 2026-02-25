@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	conn, err := pgx.Connect(ctx, cfg.db.dns)
+	conn, err := pgxpool.New(ctx, cfg.db.dns)
 	if err != nil {
 		panic(err)
 	}

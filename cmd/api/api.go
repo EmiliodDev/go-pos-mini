@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	repo "github.com/EmiliodDev/go-pos/internal/adapters/pgdb/sqlc"
 	"github.com/EmiliodDev/go-pos/internal/healthcheck"
+	"github.com/EmiliodDev/go-pos/internal/products"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -14,6 +16,15 @@ func (a *app) mount() http.Handler {
 
 	healthcheck := healthcheck.NewHandler()
 	mux.HandleFunc("/healthcheck", healthcheck.Healthcheck)
+
+	// repositories
+	repo := repo.New(a.db)
+
+	productsService := products.NewService(repo)
+	productsHandler := products.NewHandler(productsService)
+
+	// products endpoints
+	mux.HandleFunc("/products", productsHandler.ListProducts)
 
 	return mux
 }
