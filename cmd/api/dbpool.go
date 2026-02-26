@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -18,10 +17,10 @@ func dbConfig() *pgxpool.Config {
 		defaultMaxConnIdleTime   = time.Minute * 15
 		defaultHealthCheckPeriod = time.Minute
 		defaultConnectTimeout    = time.Second * 5
-		databaseUrl              = "postgres://admin:admin@localhost:5432/go_pos"
+		databaseURL              = "postgres://admin:admin@localhost:5432/go_pos"
 	)
 
-	dbConfig, err := pgxpool.ParseConfig(databaseUrl)
+	dbConfig, err := pgxpool.ParseConfig(databaseURL)
 	if err != nil {
 		log.Fatal("Failed to create a config, error: ", err)
 	}
@@ -33,8 +32,9 @@ func dbConfig() *pgxpool.Config {
 	dbConfig.HealthCheckPeriod = defaultHealthCheckPeriod
 	dbConfig.ConnConfig.ConnectTimeout = defaultConnectTimeout
 
+	// TODO: Investigate real implementations for before/after & before-close
 	dbConfig.BeforeConnect = func(ctx context.Context, c *pgx.ConnConfig) error {
-		fmt.Println("before")
+		log.Println("before")
 		return nil
 	}
 
@@ -44,7 +44,7 @@ func dbConfig() *pgxpool.Config {
 	}
 
 	dbConfig.BeforeClose = func(c *pgx.Conn) {
-		fmt.Println("before close")
+		log.Println("before close")
 	}
 
 	return dbConfig

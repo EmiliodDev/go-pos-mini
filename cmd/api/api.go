@@ -8,7 +8,7 @@ import (
 	repo "github.com/EmiliodDev/go-pos/internal/adapters/pgdb/sqlc"
 	"github.com/EmiliodDev/go-pos/internal/healthcheck"
 	"github.com/EmiliodDev/go-pos/internal/products"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func (a *app) mount() http.Handler {
@@ -24,7 +24,8 @@ func (a *app) mount() http.Handler {
 	productsHandler := products.NewHandler(productsService)
 
 	// products endpoints
-	mux.HandleFunc("/products", productsHandler.ListProducts)
+	mux.HandleFunc("GET /products", productsHandler.ListProducts)
+	mux.HandleFunc("POST /product", productsHandler.CreateProduct)
 
 	return mux
 }
@@ -44,15 +45,11 @@ func (a *app) run(h http.Handler) error {
 
 type app struct {
 	config config
-	db     *pgx.Conn
+	db     *pgxpool.Pool
 	logger *slog.Logger
 }
 
 type config struct {
 	addr string
-	db   dbConfig
-}
-
-type dbConfig struct {
-	dns string
+	db   pgxpool.Config
 }

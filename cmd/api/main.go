@@ -11,27 +11,26 @@ import (
 func main() {
 	ctx := context.Background()
 
+	dbConfig := dbConfig()
+
 	cfg := config{
 		addr: ":8080",
-		db: dbConfig{
-			dns: "postgres://admin:admin@localhost:5432/go_pos",
-		},
+		db:   *dbConfig,
 	}
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	conn, err := pgxpool.New(ctx, cfg.db.dns)
+	connPool, err := pgxpool.NewWithConfig(ctx, &cfg.db)
 	if err != nil {
-		panic(err)
+		logger.Error("error while creating connection to database")
 	}
-	defer conn.Close(ctx)
 
 	logger.Info("connected to database")
 
 	api := app{
 		config: cfg,
-		db:     conn,
+		db:     connPool,
 		logger: logger,
 	}
 
