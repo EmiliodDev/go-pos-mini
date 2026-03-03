@@ -2,6 +2,9 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS users (
     user_id BIGSERIAL PRIMARY KEY,
+    company_id BIGINT,
+    branch_id BIGINT,
+    username TEXT NOT NULL,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     password_salt TEXT NOT NULL,

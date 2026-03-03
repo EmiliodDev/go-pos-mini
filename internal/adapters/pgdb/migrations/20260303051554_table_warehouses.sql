@@ -1,11 +1,9 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS products (
-    product_id BIGSERIAL PRIMARY KEY,
-    sku VARCHAR(12) NOT NULL,
+CREATE TABLE IF NOT EXISTS warehouses (
+    warehouse_id BIGSERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    description TEXT NOT NULL,
-    price_cents INT,
+    description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -13,5 +11,5 @@ CREATE TABLE IF NOT EXISTS products (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS warehouses;
 -- +goose StatementEnd
